@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SYANORA | Intelligent Tutoring System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 1. MODAL LOGIN PENGANTAR -->
+  <div class="auth-overlay" id="auth-overlay">
+    <div class="auth-card">
+      <div class="brand-logo-visual">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+          <rect width="64" height="64" rx="16" fill="url(#syanora_grad)"/>
+          <path d="M16 46V32H22V46H16ZM26 46V24H32V46H26ZM36 46V16H42V46H36ZM46 46V10H52V46H46Z" fill="white" fill-opacity="0.2"/>
+          <path d="M42 22C42 18.5 38 16 32 16C26 16 22 18.5 22 22.5C22 31 42 29 42 39.5C42 44.5 37.5 48 31.5 48C25 48 20.5 44.5 20 40" stroke="white" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="48" cy="14" r="4" fill="#38BDF8"/>
+          <defs>
+            <linearGradient id="syanora_grad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#312E81"/>
+              <stop offset="1" stop-color="#4F46E5"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <h2>SYANORA</h2>
+      <p class="auth-subtitle">Silakan masuk menggunakan ID dan PIN terdaftar</p>
+      
+      <form class="auth-form" id="auth-form">
+        <div class="form-field">
+          <label for="auth-id-input">ID Pengguna</label>
+          <input type="text" id="auth-id-input" placeholder="Masukkan ID Pengguna" autocomplete="off" required>
+        </div>
+        <div class="form-field">
+          <label for="auth-pin-input">PIN Akses</label>
+          <input type="password" id="auth-pin-input" placeholder="Masukkan PIN" autocomplete="off" required>
+        </div>
+        <div class="auth-error" id="auth-error" hidden>ID atau PIN yang dimasukkan belum sesuai.</div>
+        <button type="submit" class="primary-button full-width">Masuk ke SYANORA</button>
+        <button type="button" class="secondary-button full-width" id="open-guide-btn" style="margin-top:10px;">Panduan Belajar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. MODAL PANDUAN SINGKAT -->
+  <div class="modal-backdrop" id="guide-modal" hidden>
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Panduan Belajar SYANORA</h3>
+        <button type="button" class="close-btn" id="close-guide-btn">Tutup</button>
+      </div>
+      <div class="modal-body">
+        <div class="guide-grid">
+          <div class="guide-step">
+            <strong>Materi</strong>
+            <p>Pelajari konsep barisan, deret, suku tengah, sisipan, dan simulasi grafik interaktif.</p>
+          </div>
+          <div class="guide-step">
+            <strong>Kasus & Game</strong>
+            <p>Selesaikan 5 studi kasus kontekstual secara berurutan dan uji ketangkasan pola di 6 level game.</p>
+          </div>
+          <div class="guide-step">
+            <strong>Latihan & ZETA</strong>
+            <p>Kerjakan Latihan Utama, Tambahan, dan Tugas Rumah bersama asisten AI ZETA.</p>
+          </div>
+          <div class="guide-step">
+            <strong>Diskusi & Profil</strong>
+            <p>Bagikan ide di ruang diskusi, lengkapi identitas sekolah serta kampus impian, dan lihat peringkat kelas.</p>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="primary-button full-width" id="close-guide-btn-bottom">Mulai Belajar</button>
+    </div>
+  </div>
+
+  <!-- 3. HEADER NAVBAR (ICON TOGGLE BERSIH TANPA EMOJI) -->
+  <header class="navbar no-print">
+    <div class="brand-container" id="brand-home-trigger" style="cursor:pointer;">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="34" height="34">
+        <rect width="40" height="40" rx="10" fill="#4F46E5"/>
+        <path d="M26.5 14C26.5 11.5 23.8 10 20 10C16.2 10 13.5 11.5 13.5 14.2C13.5 19.5 26.5 18.2 26.5 25C26.5 28.2 23.5 30 19.8 30C15.8 30 13 28 12.5 25.2" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-title">SYANORA<span>.</span></span>
+    </div>
+
+    <nav id="main-nav" class="icon-nav-bar">
+      <button type="button" class="nav-tab-btn active" data-target="page-home">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span>Beranda</span>
+      </button>
+      <button type="button" class="nav-tab-btn" data-target="page-materi">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Materi</span>
+      </button>
+      <button type="button" class="nav-tab-btn" data-target="page-numerasi">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <span>Kasus</span>
+      </button>
+      <button type="button" class="nav-tab-btn" data-target="page-game">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>Game</span>
+      </button>
+      <button type="button" class="nav-tab-btn" data-target="page-discussion">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Diskusi</span>
+      </button>
+      <button type="button" class="nav-tab-btn" data-target="page-practice">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>Latihan</span>
+      </button>
+      <button type="button" class="nav-tab-btn" data-target="page-profile">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Profil</span>
+      </button>
+      <button type="button" class="nav-tab-btn" data-target="page-analytics" id="nav-researcher-tab" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        <span>Peneliti</span>
+      </button>
+    </nav>
+
+    <div class="nav-actions">
+      <button type="button" class="api-button" id="guide-top-btn">Panduan</button>
+      <button type="button" class="api-button" id="music-toggle-btn">Audio: Aktif</button>
+      <button type="button" class="api-button logout-style" id="logout-btn">Keluar</button>
+    </div>
+  </header>
+
+  <!-- 4. KONTEN UTAMA (MULTI-PAGE SPA) -->
+  <main class="main-container">
+
+    <!-- ================= HALAMAN 1: BERANDA ================= -->
+    <section class="page-section active" id="page-home">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <span class="eyebrow">SYANORA INTELLIGENT TUTORING SYSTEM</span>
+          <h1>Kenali Keteraturan Pola,<br><span>Bangun Penalaran Numerasi.</span></h1>
+          <p class="hero-description">
+            Lingkungan belajar adaptif Barisan dan Deret Aritmetika yang memadukan visualisasi interaktif, pemecahan masalah nyata, dan bimbingan bertahap bersama asisten cerdas <strong>ZETA</strong>.
+          </p>
+          <div class="hero-actions">
+            <button type="button" class="primary-button nav-jump" data-target="page-materi">Mulai Pelajari Materi</button>
+            <button type="button" class="secondary-button nav-jump" data-target="page-practice">Buka Latihan & Tugas</button>
+          </div>
+        </div>
+
+        <div class="hero-interactive-card">
+          <div class="card-status-row">
+            <span class="badge-tag">SIMULASI CEPAT</span>
+            <span class="live-indicator">Interaktif</span>
+          </div>
+          <p class="card-subtitle">Tentukan suku berikutnya dari barisan di bawah ini:</p>
+          <div class="sequence-boxes">
+            <span class="seq-item">2</span>
+            <span class="seq-item">5</span>
+            <span class="seq-item">8</span>
+            <span class="seq-item">11</span>
+            <button type="button" class="seq-question-btn" id="reveal-pattern-btn" title="Klik untuk melihat jawaban">?</button>
+          </div>
+          <p class="pattern-explanation" id="pattern-explanation">
+            Klik tanda tanya (?) pada kotak di atas untuk mengungkap polanya.
+          </p>
+          <div class="mini-formula-strip">
+            <span>Model Umum: <strong><i>U<sub>n</sub></i> = <i>a</i> + (<i>n</i> − 1)<i>b</i></strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-nav-footer">
+        <div></div>
+        <button type="button" class="primary-button nav-jump" data-target="page-materi">Selanjutnya: Materi & Simulasi &rarr;</button>
+      </div>
+    </section>
+
+    <!-- ================= HALAMAN 2: MATERI & SIMULASI ================= -->
+    <section class="page-section" id="page-materi">
+      <div class="section-heading">
+        <span class="eyebrow">MODUL KONSEP & VISUALISASI</span>
+        <h2>Barisan dan Deret Aritmetika</h2>
+        <p class="section-desc">Pelajari 6 konsep fundamental beserta contoh kasus kontekstual dan laboratorium grafik dinamis.</p>
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <span class="concept-badge">KONSEP 01</span>
+          <h3>Barisan Aritmetika (<i>U<sub>n</sub></i>)</h3>
+          <p>Susunan bilangan yang memiliki selisih atau <strong>beda tetap (<i>b</i>)</strong> antarsuku yang berurutan. Digunakan untuk mencari nilai pada satu posisi urutan tertentu.</p>
+          <div class="formula-box"><i>U<sub>n</sub></i> = <i>a</i> + (<i>n</i> − 1)<i>b</i></div>
+          <div class="formula-legend">
+            <span><strong><i>a</i></strong> = Suku pertama (<i>U</i><sub>1</sub>) | <strong><i>b</i></strong> = <i>U</i><sub>2</sub> − <i>U</i><sub>1</sub> | <strong><i>n</i></strong> = Urutan suku</span>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <span class="concept-badge">KONSEP 02</span>
+          <h3>Deret Aritmetika (<i>S<sub>n</sub></i>)</h3>
+          <p><strong>Akumulasi penjumlahan</strong> dari suku pertama hingga suku ke-<i>n</i> (<i>U</i><sub>1</sub> + <i>U</i><sub>2</sub> + ... + <i>U<sub>n</sub></i>). Digunakan untuk menghitung total tabungan, total hasil panen, atau kapasitas gedung.</p>
+          <div class="formula-box">
+            <i>S<sub>n</sub></i> = <span class="frac"><sup><i>n</i></sup><span>/</span><sub>2</sub></span> (2<i>a</i> + (<i>n</i> − 1)<i>b</i>)
+          </div>
+          <div class="formula-legend">
+            <span>Rumus jika <i>U<sub>n</sub></i> diketahui: <strong><i>S<sub>n</sub></i> = <span class="frac"><sup><i>n</i></sup><span>/</span><sub>2</sub></span> (<i>a</i> + <i>U<sub>n</sub></i>)</strong></span>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <span class="concept-badge">KONSEP 03</span>
+          <h3>Suku Tengah (<i>U<sub>t</sub></i>)</h3>
+          <p>Pada barisan aritmetika dengan banyak suku (<i>n</i>) ganjil, nilai suku yang berada tepat di posisi tengah merupakan rata-rata dari suku pertama dan suku terakhir.</p>
+          <div class="formula-box">
+            <i>U<sub>t</sub></i> = <span class="frac"><sup><i>a</i> + <i>U<sub>n</sub></i></sup><span>/</span><sub>2</sub></span>
+          </div>
+          <div class="formula-legend">
+            <span>Indeks posisi tengah: <strong><i>t</i> = <span class="frac"><sup><i>n</i> + 1</sup><span>/</span><sub>2</sub></span></strong></span>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <span class="concept-badge">KONSEP 04</span>
+          <h3>Sisipan Barisan (<i>b'</i>)</h3>
+          <p>Jika di antara setiap dua suku berurutan disisipkan sebanyak <i>k</i> bilangan baru hingga membentuk barisan aritmetika baru, maka beda barunya berubah menjadi:</p>
+          <div class="formula-box">
+            <i>b'</i> = <span class="frac"><sup><i>b</i></sup><span>/</span><sub><i>k</i> + 1</sub></span>
+          </div>
+          <div class="formula-legend">
+            <span><strong><i>b</i></strong> = Beda awal | <strong><i>k</i></strong> = Banyak bilangan sisipan</span>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <span class="concept-badge">KONSEP 05</span>
+          <h3>Hubungan <i>U<sub>n</sub></i> dan <i>S<sub>n</sub></i></h3>
+          <p>Jika rumus jumlah <i>n</i> suku pertama (<i>S<sub>n</sub></i>) diketahui, maka nilai suku ke-<i>n</i> tunggal dapat diperoleh dari selisih jumlah hingga suku ke-<i>n</i> dengan jumlah hingga suku sebelumnya.</p>
+          <div class="formula-box"><i>U<sub>n</sub></i> = <i>S<sub>n</sub></i> − <i>S</i><sub><i>n</i>−1</sub></div>
+          <div class="formula-legend">
+            <span>Contoh: Besar tabungan khusus bulan ke-5 adalah <i>U</i><sub>5</sub> = <i>S</i><sub>5</sub> − <i>S</i><sub>4</sub>.</span>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <span class="concept-badge">KONSEP 06</span>
+          <h3>Mencari Beda dari Dua Suku Jauh</h3>
+          <p>Apabila suku pertama (<i>a</i>) belum diketahui, namun diketahui nilai pada dua urutan berbeda (misal suku ke-<i>p</i> dan suku ke-<i>q</i>), maka nilai beda (<i>b</i>) ditentukan dengan:</p>
+          <div class="formula-box">
+            <i>b</i> = <span class="frac"><sup><i>U<sub>p</sub></i> − <i>U<sub>q</sub></i></sup><span>/</span><sub><i>p</i> − <i>q</i></sub></span>
+          </div>
+          <div class="formula-legend">
+            <span>Contoh: Jika <i>U</i><sub>7</sub> = 32 dan <i>U</i><sub>3</sub> = 16, maka <i>b</i> = (32 − 16) / (7 − 3) = 4.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contoh Penerapan Kontekstual -->
+      <div class="example-box-card" style="margin-top:24px;">
+        <h3>Analisis Perbandingan Kontekstual: Kapan Memakai <i>U<sub>n</sub></i>, <i>S<sub>n</sub></i>, dan Pola Negatif?</h3>
+        <div class="example-columns three-cols">
+          <div class="example-col">
+            <h4>1. Nilai pada Urutan Tertentu (<i>U<sub>n</sub></i>)</h4>
+            <p>Baris pertama gedung memiliki 20 kursi, baris kedua 24 kursi, dan baris ketiga 28 kursi. Berapa kursi pada <strong>baris ke-15</strong>?</p>
+            <p class="solution-text">
+              <strong>Data:</strong> <i>a</i> = 20, <i>b</i> = 4, <i>n</i> = 15.<br>
+              <i>U</i><sub>15</sub> = 20 + (14 × 4) = <strong>76 kursi</strong>.
+            </p>
+          </div>
+          <div class="example-col">
+            <h4>2. Akumulasi Total Keseluruhan (<i>S<sub>n</sub></i>)</h4>
+            <p>Dengan kondisi gedung yang sama, berapa <strong>total kapasitas seluruh kursi</strong> jika terdapat 15 baris?</p>
+            <p class="solution-text">
+              <strong>Data:</strong> <i>a</i> = 20, <i>U</i><sub>15</sub> = 76, <i>n</i> = 15.<br>
+              <i>S</i><sub>15</sub> = (15 / 2) × (20 + 76) = <strong>720 kursi</strong>.
+            </p>
+          </div>
+          <div class="example-col">
+            <h4>3. Pola Penyusutan / Menurun (<i>b</i> &lt; 0)</h4>
+            <p>Suhu ruang pendingin awalnya 18 derajat, lalu turun 4 derajat setiap jam. Berapa suhu pada <strong>jam ke-7</strong>?</p>
+            <p class="solution-text">
+              <strong>Data:</strong> <i>a</i> = 18, <i>b</i> = −4, <i>n</i> = 7.<br>
+              <i>U</i><sub>7</sub> = 18 + (6 × (−4)) = <strong>−6 derajat</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Laboratorium Grafik Fleksibel -->
+      <div class="visualizer-card" style="margin-top:24px;">
+        <div class="visualizer-header">
+          <div>
+            <span class="concept-badge">LABORATORIUM VISUAL</span>
+            <h3>Simulator Grafik Barisan Positif & Negatif</h3>
+          </div>
+          <div class="limit-setting-box">
+            <label for="limit-select">Skala Rentang Angka:</label>
+            <select id="limit-select">
+              <option value="50">Kecil (−50 s/d 50)</option>
+              <option value="1000" selected>Menengah (−1.000 s/d 1.000)</option>
+              <option value="500000">Besar (−500.000 s/d 500.000)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="visualizer-body">
+          <div class="visualizer-controls">
+            <div class="control-group">
+              <div class="control-label">
+                <label for="slider-a">Suku Pertama (<i>a</i>):</label>
+                <input type="number" id="input-num-a" value="10" class="num-sync-input">
+              </div>
+              <input type="range" id="slider-a" min="-1000" max="1000" value="10">
+            </div>
+
+            <div class="control-group">
+              <div class="control-label">
+                <label for="slider-b">Beda Antar Suku (<i>b</i>):</label>
+                <input type="number" id="input-num-b" value="15" class="num-sync-input">
+              </div>
+              <input type="range" id="slider-b" min="-1000" max="1000" value="15">
+            </div>
+
+            <div class="control-group">
+              <div class="control-label">
+                <label for="slider-n">Banyak Suku (<i>n</i>):</label>
+                <strong id="val-n">8</strong>
+              </div>
+              <input type="range" id="slider-n" min="3" max="15" value="8">
+            </div>
+
+            <div class="calc-summary">
+              <div class="calc-item">
+                <span class="calc-label" id="label-un-sim">Suku Terakhir (<i>U</i><sub>8</sub>)</span>
+                <strong class="calc-result" id="res-un">115</strong>
+              </div>
+              <div class="calc-item">
+                <span class="calc-label" id="label-sn-sim">Jumlah Total (<i>S</i><sub>8</sub>)</span>
+                <strong class="calc-result" id="res-sn">500</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="visualizer-canvas-wrapper">
+            <div class="visualizer-canvas" id="bars-container"></div>
+            <p class="canvas-caption">Batang biru merepresentasikan nilai suku positif, sedangkan batang merah merepresentasikan nilai suku negatif.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-nav-footer">
+        <button type="button" class="secondary-button nav-jump" data-target="page-home">&larr; Kembali ke Beranda</button>
+        <button type="button" class="primary-button nav-jump" data-target="page-numerasi">Selanjutnya: Studi Kasus &rarr;</button>
+      </div>
+    </section>
+
+    <!-- ================= HALAMAN 3: STUDI KASUS NUMERASI (5 KASUS TERKUNCI) ================= -->
+    <section class="page-section" id="page-numerasi">
+      <div class="section-heading">
+        <span class="eyebrow">PEMECAHAN MASALAH KONTEKSTUAL</span>
+        <h2>Studi Kasus Numerasi Terstruktur</h2>
+        <p class="section-desc">Setiap kasus harus diselesaikan dengan benar sebelum dapat membuka kasus berikutnya. Gunakan Petunjuk atau Bantuan ZETA jika mengalami kesulitan.</p>
+      </div>
+
+      <div class="case-tabs" id="case-tabs-container">
+        <button type="button" class="case-tab active" data-case="0">Kasus 1: Finansial</button>
+        <button type="button" class="case-tab locked" data-case="1">Kasus 2: Energi Surya (Terkunci)</button>
+        <button type="button" class="case-tab locked" data-case="2">Kasus 3: Lingkungan (Terkunci)</button>
+        <button type="button" class="case-tab locked" data-case="3">Kasus 4: Agribisnis (Terkunci)</button>
+        <button type="button" class="case-tab locked" data-case="4">Kasus 5: Konstruksi (Terkunci)</button>
+      </div>
+
+      <div class="numerasi-card">
+        <div class="numerasi-story">
+          <span class="concept-badge" id="case-badge">KASUS 01</span>
+          <h3 id="case-title">Judul Studi Kasus</h3>
+          <div class="story-content" id="case-story"></div>
+          <div class="data-table-wrapper" id="case-table-box"></div>
+        </div>
+
+        <div class="numerasi-questions">
+          <h4>Lembar Analisis & Keputusan</h4>
+          
+          <div class="num-step-box">
+            <label id="case-q1-label" for="num-input-1">Pertanyaan 1:</label>
+            <div class="input-with-unit">
+              <input type="number" id="num-input-1" placeholder="Ketik angka">
+              <span class="unit-tag" id="case-unit-1">satuan</span>
+            </div>
+          </div>
+
+          <div class="num-step-box">
+            <label id="case-q2-label" for="num-input-2">Pertanyaan 2:</label>
+            <div class="input-with-unit">
+              <input type="number" id="num-input-2" placeholder="Ketik angka">
+              <span class="unit-tag" id="case-unit-2">satuan</span>
+            </div>
+          </div>
+
+          <div class="num-step-box">
+            <label id="case-q3-label" for="num-input-3">Pertanyaan 3:</label>
+            <div class="input-with-unit">
+              <input type="number" id="num-input-3" placeholder="Ketik angka">
+              <span class="unit-tag" id="case-unit-3">satuan</span>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button type="button" class="primary-button" id="check-numerasi-btn">Periksa Jawaban</button>
+            <button type="button" class="secondary-button" id="hint-numerasi-btn">Petunjuk Rumus</button>
+            <button type="button" class="secondary-button" id="ai-case-help-btn">Bantuan ZETA AI</button>
+            <button type="button" class="primary-button" id="next-case-btn" style="background:#059669;" hidden>Lanjut Kasus Berikutnya &rarr;</button>
+          </div>
+
+          <div class="hint-box" id="numerasi-hint" hidden></div>
+          <div class="feedback" id="numerasi-feedback" hidden></div>
+        </div>
+      </div>
+
+      <div class="page-nav-footer">
+        <button type="button" class="secondary-button nav-jump" data-target="page-materi">&larr; Kembali ke Materi</button>
+        <button type="button" class="primary-button nav-jump" data-target="page-game">Selanjutnya: Mini-Game &rarr;</button>
+      </div>
+    </section>
+
+    <!-- ================= HALAMAN 4: MINI-GAME POLA (6 LEVEL + ON MIC VOICE) ================= -->
+    <section class="page-section" id="page-game">
+      <div class="section-heading">
+        <span class="eyebrow">LABORATORIUM GAMIFIKASI</span>
+        <h2>Tantangan Interaktif Pola & Suara</h2>
+        <p class="section-desc">Selesaikan 6 tantangan pola barisan dan deret menggunakan penggeser visual atau ucapkan jawabanmu secara langsung melalui mikrofon!</p>
+      </div>
+
+      <div class="game-card">
+        <div class="game-header-bar">
+          <div style="display:flex; gap:8px; align-items:center;">
+            <span class="concept-badge" id="game-level-badge" style="margin:0;">LEVEL 1 / 6</span>
+            <span class="badge-streak" id="game-streak-badge">Streak: 0</span>
+          </div>
+          <span class="game-score-pill" id="game-score-pill">Total Skor: 0</span>
+        </div>
+
+        <h3 id="game-title">Judul Tantangan Game</h3>
+        <p class="game-problem-desc" id="game-desc"></p>
+
+        <!-- Visualisasi Deret Kartu di dalam Game -->
+        <div class="game-visual-blocks" id="game-visual-blocks"></div>
+
+        <div class="game-slider-container">
+          <div class="game-slider-header">
+            <span>Geser tuas atau gunakan tombol Mikrofon untuk memilih nilai:</span>
+            <strong class="game-current-val" id="game-slider-val">10</strong>
+          </div>
+          <input type="range" id="game-slider" min="-60" max="250" value="10">
+        </div>
+
+        <div class="action-row">
+          <button type="button" class="primary-button" id="game-submit-btn">Kunci Jawaban</button>
+          <button type="button" class="secondary-button" id="game-voice-btn">Jawab Pakai Suara (On Mic)</button>
+          <button type="button" class="secondary-button" id="game-hint-btn">Bantuan Petunjuk</button>
+          <button type="button" class="primary-button" id="game-next-btn" style="background:#059669;" hidden>Level Berikutnya &rarr;</button>
+        </div>
+
+        <p id="voice-status-msg" style="font-size:13px; color:var(--primary); margin-top:10px; font-weight:600;" hidden></p>
+        <div class="hint-box" id="game-hint-box" hidden></div>
+        <div class="feedback" id="game-feedback" hidden></div>
+      </div>
+
+      <div class="page-nav-footer">
+        <button type="button" class="secondary-button nav-jump" data-target="page-numerasi">&larr; Kembali ke Studi Kasus</button>
+        <button type="button" class="primary-button nav-jump" data-target="page-discussion">Selanjutnya: Diskusi Kelas &rarr;</button>
+      </div>
+    </section>
+
+    <!-- ================= HALAMAN 5: DISKUSI ANTAR SISWA ================= -->
+    <section class="page-section" id="page-discussion">
+      <div class="section-heading">
+        <span class="eyebrow">KOLABORASI ANTAR SISWA</span>
+        <h2>Ruang Diskusi Kelas</h2>
+        <p class="section-desc">Kirim tanggapan, pertanyaan konsep, lampiran gambar catatan, rekaman audio, atau dokumen.</p>
+      </div>
+
+      <div class="discussion-card">
+        <div class="discussion-feed" id="discussion-feed"></div>
+
+        <form class="discussion-form" id="discussion-form">
+          <div class="disc-input-wrapper">
+            <input type="text" id="discussion-input" placeholder="Tulis pesan atau tanggapan diskusi..." autocomplete="off">
+            <div class="disc-attachment-preview" id="disc-attach-preview" hidden></div>
+          </div>
+          <label class="secondary-button attach-label" style="cursor:pointer;">
+            Lampirkan File
+            <input type="file" id="disc-file-input" accept="image/*,audio/*,.pdf,.doc,.docx" hidden>
+          </label>
+          <button type="submit" class="primary-button">Kirim Pesan</button>
+        </form>
+      </div>
+
+      <div class="page-nav-footer">
+        <button type="button" class="secondary-button nav-jump" data-target="page-game">&larr; Kembali ke Mini-Game</button>
+        <button type="button" class="primary-button nav-jump" data-target="page-practice">Selanjutnya: Latihan & ZETA &rarr;</button>
+      </div>
+    </section>
+
+    <!-- ================= HALAMAN 6: LATIHAN (3 TAB: UTAMA, TAMBAHAN, TUGAS/PR) + ZETA AI + LEADERBOARD ================= -->
+    <section class="page-section" id="page-practice">
+      <div class="section-heading flex-between no-print">
+        <div>
+          <span class="eyebrow">EVALUASI NUMERASI & TUTOR AI</span>
+          <h2>Pusat Latihan, Tugas Rumah & Bimbingan ZETA</h2>
+          <p class="section-desc">Pilih kategori latihan di bawah ini. Setiap nomor wajib dijawab dengan benar bersama bimbingan ZETA sebelum melangkah ke nomor berikutnya.</p>
+        </div>
+        <div class="digital-timer-box">
+          <span class="timer-label">WAKTU SESI</span>
+          <div class="digital-clock" id="test-timer">00:00</div>
+        </div>
+      </div>
+
+      <!-- 3 Tab Kategori Soal (Masing-masing 5 Soal) -->
+      <div class="case-tabs no-print" id="practice-category-tabs">
+        <button type="button" class="case-tab active" data-pcat="utama">Latihan Utama (5 Soal)</button>
+        <button type="button" class="case-tab" data-pcat="tambahan">Latihan Tambahan (5 Soal)</button>
+        <button type="button" class="case-tab" data-pcat="pr">Tugas / PR Rumah (5 Soal)</button>
+      </div>
+
+      <!-- Workspace Soal & ZETA AI (Diperbesar & Proporsional) -->
+      <div class="its-workspace-large no-print" id="practice-workspace">
+        <!-- Panel Kiri: Soal & Tahapan Berpikir -->
+        <div class="practice-card-large">
+          <div class="practice-header-meta">
+            <span class="concept-badge" id="practice-step-badge">LATIHAN UTAMA · SOAL 1 / 5</span>
+            <span class="indicator-badge" id="practice-indicator-badge">Indikator Numerasi</span>
+          </div>
+
+          <h3 id="challenge-title" style="font-size:22px; margin-bottom:10px;">Judul Soal</h3>
+          <div class="problem-text-large" id="challenge-problem"></div>
+
+          <!-- Lembar Pemecahan Bertahap -->
+          <div class="guided-steps-box">
+            <p class="guided-steps-title"><strong>Pemetaan Informasi & Strategi (Membantu Penalaranmu):</strong></p>
+            <div class="mini-steps-grid">
+              <div class="mini-step">
+                <label for="step-a-input">1. Nilai Awal (<i>a</i>)</label>
+                <input type="number" id="step-a-input" placeholder="Isi nilai a">
+              </div>
+              <div class="mini-step">
+                <label for="step-b-input">2. Selisih Tetap (<i>b</i>)</label>
+                <input type="number" id="step-b-input" placeholder="Isi nilai b">
+              </div>
+              <div class="mini-step">
+                <label for="step-formula-select">3. Strategi Rumus</label>
+                <select id="step-formula-select">
+                  <option value="">-- Pilih Model --</option>
+                  <option value="Un">Suku ke-n (Uₙ)</option>
+                  <option value="Sn">Jumlah Deret (Sₙ)</option>
+                  <option value="Evaluasi">Deret & Evaluasi Target</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="num-step-box" style="margin-top:18px;">
+            <label for="answer-input" style="font-size:15px;"><strong>4. Jawaban Akhir Kamu:</strong></label>
+            <div class="input-with-unit">
+              <input type="number" id="answer-input" placeholder="Ketik hasil perhitungan akhir...">
+              <span class="unit-tag" id="challenge-unit">satuan</span>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button type="button" class="primary-button" id="check-btn">Periksa Jawaban</button>
+            <button type="button" class="secondary-button" id="guide-me-btn">Minta Tuntunan Bertahap</button>
+            <button type="button" class="primary-button" id="next-btn" style="background:#059669;" hidden>Soal Berikutnya &rarr;</button>
+          </div>
+
+          <div class="feedback" id="feedback-box" hidden></div>
+        </div>
+
+        <!-- Panel Kanan: Poster Interaktif "TANYA ZETA" (AI Tutor) -->
+        <div class="tutor-poster-card">
+          <div class="zeta-poster-banner">
+            <div class="zeta-badge-wrap">
+              <div class="zeta-emblem">ZETA</div>
+              <div>
+                <span class="poster-kicker">SYANORA AI COMPANION</span>
+                <h4>Tanya ZETA</h4>
+                <p>Menjelaskan Konsep · Membimbing Langkah · Umpan Balik</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tiga Peran Utama Tutor AI -->
+          <div class="ai-roles-bar">
+            <button type="button" class="role-btn" id="btn-role-explain">
+              <strong>1. Jelaskan Konsep</strong>
+              <span>Explaining</span>
+            </button>
+            <button type="button" class="role-btn" id="btn-role-guide">
+              <strong>2. Bimbing Langkah</strong>
+              <span>Guiding (CT)</span>
+            </button>
+            <button type="button" class="role-btn" id="btn-role-feedback">
+              <strong>3. Evaluasi Jawabanku</strong>
+              <span>Feedback</span>
+            </button>
+          </div>
+
+          <div class="chat-messages-large" id="chat-messages"></div>
+
+          <div class="quick-prompts">
+            <button type="button" class="chip-btn" data-prompt="Jelaskan konsep dasar pada soal ini dengan bahasa sederhana.">Jelaskan konsep soal ini</button>
+            <button type="button" class="chip-btn" data-prompt="Bimbing saya secara bertahap mulai dari memilah informasi diketahui.">Bimbing dari tahap awal</button>
+            <button type="button" class="chip-btn" data-prompt="Mengapa kesimpulan jawaban saya tadi masih belum tepat?">Mengapa jawaban saya salah?</button>
+          </div>
+
+          <form class="chat-input-row" id="chat-form">
+            <input type="text" id="chat-input" placeholder="Ketik pertanyaanmu untuk ZETA..." autocomplete="off">
+            <button type="submit" class="primary-button">Kirim</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- PAPAN PERINGKAT KELAS (LEADERBOARD) & FITUR SHARE -->
+      <div class="leaderboard-card no-print" style="margin-top:28px;">
+        <div class="flex-between" style="margin-bottom:16px;">
+          <div>
+            <span class="concept-badge">PAPAN KEBANGGAAN KELAS</span>
+            <h3>Peringkat Ketuntasan & Kecepatan Terbaik SYANORA</h3>
+          </div>
+          <div class="share-actions-bar">
+            <button type="button" class="secondary-button btn-sm" id="share-wa-btn">Bagikan ke WhatsApp</button>
+            <button type="button" class="secondary-button btn-sm" id="share-ig-btn">Bagikan ke Instagram</button>
+            <button type="button" class="primary-button btn-sm" id="copy-link-btn">Salin Link Pencapaian</button>
+          </div>
+        </div>
+
+        <div class="podium-grid" id="leaderboard-podium"></div>
+      </div>
+
+      <!-- KARTU LAPORAN HASIL BELAJAR (BERBEDA ANTARA SISWA & PENELITI/GURU) -->
+      <div class="report-card-container" id="final-report-card" hidden>
+        <div class="report-header flex-between">
+          <div>
+            <span class="concept-badge" id="report-role-badge">LAPORAN INDIVIDU SISWA</span>
+            <h2 id="report-main-title">Laporan Capaian Kemampuan Numerasi SYANORA</h2>
+          </div>
+          <div class="action-row no-print" style="margin:0;">
+            <button type="button" class="secondary-button" id="back-to-practice-btn">Kembali ke Soal</button>
+            <button type="button" class="primary-button" id="print-report-btn">Unduh Laporan (PDF)</button>
+          </div>
+        </div>
+
+        <div class="report-meta-grid">
+          <div class="report-meta-item"><span>Nama Lengkap:</span> <strong id="rep-name">-</strong></div>
+          <div class="report-meta-item"><span>Asal Sekolah:</span> <strong id="rep-school">-</strong></div>
+          <div class="report-meta-item"><span>Kategori Paket:</span> <strong id="rep-category">-</strong></div>
+          <div class="report-meta-item"><span>Durasi Penyelesaian:</span> <strong id="rep-time">00:00</strong></div>
+          <div class="report-meta-item"><span>Skor Akhir:</span> <strong id="rep-score" style="color:#4f46e5; font-size:20px;">100 / 100</strong></div>
+        </div>
+
+        <!-- Bagian Khusus Analitik Peneliti/Guru (Hanya tampil jika role = admin) -->
+        <div id="researcher-only-report-section" class="researcher-diagnostic-box" hidden>
+          <h4>Matriks Diagnostik Peneliti & Guru (Analisis Tahap CT & Miskonsepsi)</h4>
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">
+            Bagian ini hanya muncul pada mode Peneliti/Guru untuk keperluan analisis data tesis (jumlah percobaan, frekuensi bantuan ZETA AI, dan pemetaan indikator).
+          </p>
+          <div id="researcher-diagnostic-table"></div>
+        </div>
+
+        <div class="report-summary-section">
+          <h4>Rincian Penyelesaian & Pembahasan Konsep</h4>
+          <div id="report-details-list"></div>
+        </div>
+      </div>
+
+      <div class="page-nav-footer no-print">
+        <button type="button" class="secondary-button nav-jump" data-target="page-discussion">&larr; Kembali ke Diskusi</button>
+        <button type="button" class="primary-button nav-jump" data-target="page-profile">Selanjutnya: Profil Siswa &rarr;</button>
+      </div>
+    </section>
+
+    <!-- ================= HALAMAN 7: PROFIL SISWA (GESER/PUTAR FOTO, WAJIB ISI SEMUA, MODE TAMPILAN PUBLIK) ================= -->
+    <section class="page-section" id="page-profile">
+      <div class="section-heading">
+        <h2>Identitas & Profil Akademik Siswa</h2>
+        <p class="section-desc">Lengkapi seluruh data identitas, atur posisi serta rotasi foto profilmu, dan lihat bagaimana profilmu tampil di hadapan teman sekelas.</p>
+      </div>
+
+      <!-- MODE 1: KARTU PROFIL TERSIMPAN (TAMPILAN PUBLIK DI AKUN LAIN + TOMBOL EDIT KANAN ATAS) -->
+      <div class="saved-profile-showcase theme-male" id="profile-view-mode" hidden>
+        <div class="showcase-top-bar">
+          <span class="concept-badge">TAMPILAN PROFIL PUBLIK</span>
+          <button type="button" class="secondary-button btn-sm" id="edit-profile-trigger-btn">Edit Profil</button>
+        </div>
+
+        <div class="showcase-body">
+          <div class="avatar-wrapper showcase-avatar">
+            <div class="avatar-circle" id="view-avatar-box"></div>
+          </div>
+          <div class="showcase-info">
+            <h3 id="view-prof-name">-</h3>
+            <p class="showcase-sub" id="view-prof-school">-</p>
+            <div class="showcase-badges">
+              <span class="info-pill" id="view-prof-gender">-</span>
+              <span class="info-pill" id="view-prof-hobby">-</span>
+              <span class="info-pill dream-pill" id="view-prof-univ">-</span>
+            </div>
+            <div style="margin-top:14px;">
+              <a href="#" target="_blank" rel="noopener noreferrer" id="view-prof-ig" class="ig-link-btn">Kunjungi Instagram Siswa</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODE 2: FORMULIR EDIT PROFIL (WAJIB ISI SEMUA KOLOM) -->
+      <div class="profile-card-container theme-male" id="profile-edit-mode">
+        <div class="profile-left-col">
+          <div class="avatar-wrapper">
+            <div class="avatar-circle" id="avatar-preview">Foto</div>
+          </div>
+
+          <label for="avatar-file-input" class="secondary-button full-width" style="text-align:center; cursor:pointer; margin-top:12px; display:block;">
+            Unggah Foto dari Perangkat
+          </label>
+          <input type="file" id="avatar-file-input" accept="image/*" hidden>
+
+          <div class="photo-controls">
+            <div class="control-group">
+              <label for="photo-zoom">Perbesar / Zoom Foto:</label>
+              <input type="range" id="photo-zoom" min="80" max="200" value="100">
+            </div>
+            <div class="control-group" style="margin-top:8px;">
+              <label for="photo-rotate">Putar / Rotasi Foto (0° - 360°):</label>
+              <input type="range" id="photo-rotate" min="0" max="360" value="0">
+            </div>
+            <div class="control-group" style="margin-top:8px;">
+              <label for="photo-pos-x">Geser Horisontal (Kiri / Kanan):</label>
+              <input type="range" id="photo-pos-x" min="-60" max="60" value="0">
+            </div>
+            <div class="control-group" style="margin-top:8px;">
+              <label for="photo-pos-y">Geser Vertikal (Atas / Bawah):</label>
+              <input type="range" id="photo-pos-y" min="-60" max="60" value="0">
+            </div>
+            <div class="control-group" style="margin-top:8px;">
+              <label for="photo-filter">Filter Warna Foto:</label>
+              <select id="photo-filter" style="width:100%; padding:6px; border-radius:8px; border:1px solid var(--border-color); margin-top:4px;">
+                <option value="none">Normal</option>
+                <option value="grayscale(100%)">Hitam Putih</option>
+                <option value="sepia(75%)">Hangat (Sepia)</option>
+                <option value="contrast(120%) saturate(130%)">Cerah Kontras</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-right-col">
+          <div class="form-field">
+            <label for="prof-name">Nama Lengkap Siswa *</label>
+            <input type="text" id="prof-name" placeholder="Masukkan nama lengkap" required>
+          </div>
+
+          <div class="form-field">
+            <label for="prof-school">Nama Sekolah SMA *</label>
+            <input type="text" id="prof-school" placeholder="Contoh: SMA Negeri 1 Palembang" required>
+          </div>
+
+          <div class="form-field">
+            <label for="prof-gender">Jenis Kelamin *</label>
+            <select id="prof-gender" required>
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="prof-hobby-select">Hobi & Minat Utama *</label>
+            <select id="prof-hobby-select" required>
+              <option value="">-- Pilih Hobi & Minat --</option>
+              <option value="Berkuda">Berkuda</option>
+              <option value="Memanah">Memanah</option>
+              <option value="Memasak & Kuliner">Memasak & Kuliner</option>
+              <option value="Bulu Tangkis">Bulu Tangkis</option>
+              <option value="Lari & Atletik">Lari & Atletik</option>
+              <option value="Berenang">Berenang</option>
+              <option value="Sepak Bola / Futsal">Sepak Bola / Futsal</option>
+              <option value="Basket">Basket</option>
+              <option value="Musik & Instrumen">Musik & Instrumen</option>
+              <option value="Melukis & Desain Grafis">Melukis & Desain Grafis</option>
+              <option value="Fotografi & Videografi">Fotografi & Videografi</option>
+              <option value="Membaca & Literasi">Membaca & Literasi</option>
+              <option value="Menulis Karya Ilmiah / Sastra">Menulis Karya Ilmiah / Sastra</option>
+              <option value="Pemrograman & Robotika">Pemrograman & Robotika</option>
+              <option value="Catur & Strategi">Catur & Strategi</option>
+              <option value="Pecinta Alam & Mendaki">Pecinta Alam & Mendaki</option>
+              <option value="Lainnya">Lainnya (Ketik Sendiri)</option>
+            </select>
+          </div>
+
+          <div class="form-field" id="custom-hobby-field" hidden>
+            <label for="prof-hobby-custom">Tuliskan Hobi & Minatmu *</label>
+            <input type="text" id="prof-hobby-custom" placeholder="Ketik hobi spesifikmu di sini...">
+          </div>
+
+          <div class="form-field">
+            <label for="prof-univ">Universitas Impian *</label>
+            <input type="text" id="prof-univ" placeholder="Contoh: Universitas Sriwijaya / ITB / UI / UGM" required>
+          </div>
+
+          <div class="form-field">
+            <label for="prof-ig">Tautan Instagram (URL atau @username) *</label>
+            <input type="text" id="prof-ig" placeholder="Contoh: https://instagram.com/username atau @username" required>
+          </div>
+
+          <div id="profile-validation-msg" class="auth-error" hidden>Harap lengkapi seluruh kolom identitas di atas terlebih dahulu.</div>
+
+          <button type="button" class="primary-button full-width" id="save-profile-btn">Simpan dan Tampilkan Profil</button>
+        </div>
+      </div>
+
+      <!-- DIREKTORI PROFIL TEMAN SEKELAS (AGAR SISWA LAIN BISA MELIHAT & KLIK IG) -->
+      <div class="classmates-directory-card" style="margin-top:28px;">
+        <span class="concept-badge">JEJARING KELAS SYANORA</span>
+        <h3>Direktori Identitas & Kampus Impian Teman Sekelas</h3>
+        <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:16px;">Klik tombol Instagram pada kartu temanmu untuk saling terhubung.</p>
+        <div class="classmates-grid" id="classmates-grid"></div>
+      </div>
+
+      <div class="page-nav-footer">
+        <button type="button" class="secondary-button nav-jump" data-target="page-practice">&larr; Kembali ke Latihan</button>
+        <div></div>
+      </div>
+    </section>
+
+    <!-- ================= HALAMAN 8: PANEL DATA PENELITI & GURU ================= -->
+    <section class="page-section" id="page-analytics" hidden>
+      <div class="section-heading">
+        <span class="eyebrow">PANEL MANAJEMEN PENELITI & GURU</span>
+        <h2>Database Hasil Belajar, Rapor Analitik & Partisipan SYANORA</h2>
+      </div>
+
+      <div class="log-card" style="margin-bottom:24px;">
+        <h3>Unggah Dokumen Daftar Siswa & Guru (PDF / CSV / Excel)</h3>
+        <p style="color:var(--text-muted); font-size:14px; margin:6px 0 14px;">
+          Unggah berkas daftar peserta penelitian untuk disimpan di dalam sistem manajemen kelas.
+        </p>
+        <div class="action-row">
+          <input type="file" id="upload-roster-file" accept=".pdf,.csv,.xlsx,.xls" class="secondary-button">
+          <span id="roster-status-text" style="font-size:13.5px; color:#059669; font-weight:600;"></span>
+        </div>
+      </div>
+
+      <div class="log-card">
+        <div class="flex-between" style="margin-bottom:16px;">
+          <h3>Log Aktivitas Penyelesaian Masalah & Interaksi AI</h3>
+          <button type="button" class="primary-button" id="export-csv-btn">Unduh Database Lengkap (CSV)</button>
+        </div>
+        <div class="data-table-wrapper">
+          <table class="case-table">
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>ID</th>
+                <th>Nama</th>
+                <th>Sekolah</th>
+                <th>Modul / Aktivitas</th>
+                <th>Respons Siswa</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="diagnostic-log-body">
+              <tr><td colspan="7" style="text-align:center;">Belum ada data aktivitas yang tercatat.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
